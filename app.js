@@ -509,6 +509,81 @@ class ImageHostManager {
 
 const { createApp } = Vue;
 
+/** 命名空间 localStorage；启动时从旧版未命名空间键迁移 */
+const MMX_STORAGE = {
+  starredStyles: 'mmx_editor_starredStyles',
+  currentStyle: 'mmx_editor_currentStyle',
+  markdownInput: 'mmx_editor_markdownInput',
+  articleHistory: 'mmx_editor_articleHistory',
+  currentArticleId: 'mmx_editor_currentArticleId',
+};
+
+function migrateLegacyStorage() {
+  const pairs = [
+    [MMX_STORAGE.starredStyles, 'starredStyles'],
+    [MMX_STORAGE.currentStyle, 'currentStyle'],
+    [MMX_STORAGE.markdownInput, 'markdownInput'],
+    [MMX_STORAGE.articleHistory, 'articleHistory'],
+  ];
+  try {
+    pairs.forEach(([neu, old]) => {
+      if (!localStorage.getItem(neu) && localStorage.getItem(old)) {
+        localStorage.setItem(neu, localStorage.getItem(old));
+      }
+    });
+  } catch (e) {
+    console.warn('mmx storage migration', e);
+  }
+}
+
+/**
+ * 将本地已保存正文里「旧演示图」URL 换成当前默认图（避免只改代码后仍显示旧图）
+ * 含上游原版与曾用过的 Unsplash 替换批次。
+ */
+function upgradeStoredDemoImageUrls(markdown) {
+  if (!markdown || typeof markdown !== 'string') {
+    return markdown;
+  }
+  let m = markdown;
+  const replacements = [
+    // 横幅 1200×400
+    ['https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=1200&h=400&fit=crop', 'https://picsum.photos/seed/mmx-hero/1200/400'],
+    ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=400&fit=crop', 'https://picsum.photos/seed/mmx-hero/1200/400'],
+    // 单图 800×500
+    ['https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=500&fit=crop', 'https://picsum.photos/seed/mmx-block/800/500'],
+    ['https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=500&fit=crop', 'https://picsum.photos/seed/mmx-block/800/500'],
+    // 三图 600×400
+    ['https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop', 'https://picsum.photos/seed/mmx-g1/600/400'],
+    ['https://images.unsplash.com/photo-1470071459604-3b5e3b5e8a5c?w=600&h=400&fit=crop', 'https://picsum.photos/seed/mmx-g1/600/400'],
+    ['https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop', 'https://picsum.photos/seed/mmx-g2/600/400'],
+    ['https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop', 'https://picsum.photos/seed/mmx-g2/600/400'],
+    ['https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop', 'https://picsum.photos/seed/mmx-g3/600/400'],
+    ['https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=400&fit=crop', 'https://picsum.photos/seed/mmx-g3/600/400'],
+  ];
+  replacements.forEach(([from, to]) => {
+    m = m.split(from).join(to);
+  });
+  return m;
+}
+
+/** 移除本地存档里遗留的第三方仓库推广行（旧版默认文末） */
+function stripLegacyRepoPromo(markdown) {
+  if (!markdown || typeof markdown !== 'string') {
+    return markdown;
+  }
+  const lines = markdown.split(/\r?\n/);
+  const kept = lines.filter((line) => {
+    const low = line.toLowerCase();
+    if (low.includes('alchaincyf')) return false;
+    if (low.includes('huasheng_editor')) return false;
+    if (/\*\*🌟\s*开源项目\*\*/.test(line)) return false;
+    return true;
+  });
+  return kept.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+
+const SESSION_SAVE_DEBOUNCE_MS = 400;
+
 const EMPHASIS_MARKERS = new Set([
   0x2A, // *
   0x5F, // _
@@ -579,44 +654,6 @@ const editorApp = createApp({
       previewMode: 'wechat',  // 预览模式：'wechat' 或 'xiaohongshu'
       xiaohongshuImages: [],  // 生成的小红书图片数组
       xiaohongshuGenerating: false,  // 是否正在生成小红书图片
-      // 右下角浮动广告
-      floatingAd: {
-        ads: [
-          {
-            id: 'yinhe',
-            icon: '🎬',
-            title: '银河录像局',
-            subtitle: 'ChatGPT/Netflix/Claude 一站合租',
-            tag: '93折',
-            tagColor: 'orange',
-            link: 'https://nf.video/o9jj0s',
-            coupon: 'huasheng'
-          },
-          {
-            id: 'huanqiu',
-            icon: '🌍',
-            title: '环球巴士',
-            subtitle: 'ChatGPT Plus合租 35元/月',
-            tag: '热门',
-            tagColor: 'blue',
-            link: 'https://universalbus.cn/?s=5HCba2gPfO',
-            coupon: null
-          },
-          {
-            id: 'zsxq',
-            icon: '🔥',
-            title: 'AI编程知识星球',
-            subtitle: '1500+人已加入 / 限量30元券',
-            tag: '限时335元',
-            tagColor: 'purple',
-            link: 'https://t.zsxq.com/K3vsN',
-            coupon: '30元优惠券'
-          }
-        ],
-        isExpanded: false,
-        isVisible: false,
-        currentIndex: 0
-      },
       // 文章历史记录
       articleHistory: [],           // 历史文章列表
       showHistoryPanel: false,      // 侧边栏显示状态
@@ -626,6 +663,19 @@ const editorApp = createApp({
   },
 
   async mounted() {
+    migrateLegacyStorage();
+
+    this._onPageHide = () => this.flushSessionSave();
+    this._onBeforeUnload = () => this.flushSessionSave();
+    this._onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        this.flushSessionSave();
+      }
+    };
+    window.addEventListener('pagehide', this._onPageHide);
+    window.addEventListener('beforeunload', this._onBeforeUnload);
+    document.addEventListener('visibilitychange', this._onVisibilityChange);
+
     // 加载星标样式
     this.loadStarredStyles();
 
@@ -635,8 +685,7 @@ const editorApp = createApp({
     // 加载文章历史记录
     this.loadArticleHistory();
 
-    // 初始化浮动广告
-    this.initFloatingAd();
+    this.restoreSessionMeta();
 
     // 初始化图片存储管理器
     this.imageStore = new ImageStore();
@@ -697,22 +746,10 @@ const editorApp = createApp({
   },
 
   beforeUnmount() {
-    this.stopFloatingAdRotation();
-  },
-
-  computed: {
-    currentFloatingAd() {
-      if (!this.floatingAd || !this.floatingAd.ads || this.floatingAd.ads.length === 0) {
-        return {
-          icon: '',
-          title: '',
-          tag: '',
-          tagColor: 'orange'
-        };
-      }
-
-      return this.floatingAd.ads[this.floatingAd.currentIndex] || this.floatingAd.ads[0];
-    }
+    window.removeEventListener('pagehide', this._onPageHide);
+    window.removeEventListener('beforeunload', this._onBeforeUnload);
+    document.removeEventListener('visibilitychange', this._onVisibilityChange);
+    this.flushSessionSave();
   },
 
   watch: {
@@ -731,7 +768,7 @@ const editorApp = createApp({
       clearTimeout(this._saveTimeout);
       this._saveTimeout = setTimeout(() => {
         this.saveUserPreferences();
-      }, 1000); // 1秒后保存
+      }, SESSION_SAVE_DEBOUNCE_MS);
 
       // 当内容被清空时，重置当前文章ID（下次保存会创建新文章）
       if (!newVal || !newVal.trim()) {
@@ -745,9 +782,25 @@ const editorApp = createApp({
   },
 
   methods: {
+    flushSessionSave() {
+      clearTimeout(this._saveTimeout);
+      this.saveUserPreferences();
+    },
+
+    restoreSessionMeta() {
+      try {
+        const aid = localStorage.getItem(MMX_STORAGE.currentArticleId);
+        if (aid && this.articleHistory.some((a) => a.id === aid)) {
+          this.currentArticleId = aid;
+        }
+      } catch (e) {
+        console.warn('restoreSessionMeta', e);
+      }
+    },
+
     loadStarredStyles() {
       try {
-        const saved = localStorage.getItem('starredStyles');
+        const saved = localStorage.getItem(MMX_STORAGE.starredStyles);
         if (saved) {
           this.starredStyles = JSON.parse(saved);
         }
@@ -761,15 +814,22 @@ const editorApp = createApp({
     loadUserPreferences() {
       try {
         // 加载样式偏好
-        const savedStyle = localStorage.getItem('currentStyle');
+        const savedStyle = localStorage.getItem(MMX_STORAGE.currentStyle);
         if (savedStyle && STYLES[savedStyle]) {
           this.currentStyle = savedStyle;
         }
 
         // 加载上次的内容
-        const savedContent = localStorage.getItem('markdownInput');
+        const savedContent = localStorage.getItem(MMX_STORAGE.markdownInput);
         if (savedContent) {
-          this.markdownInput = savedContent;
+          const upgraded = upgradeStoredDemoImageUrls(savedContent);
+          const cleaned = stripLegacyRepoPromo(upgraded);
+          this.markdownInput = cleaned;
+          if (cleaned !== savedContent) {
+            this.$nextTick(() => {
+              this.saveUserPreferences();
+            });
+          }
         } else {
           // 如果没有保存的内容，加载默认示例
           this.loadDefaultExample();
@@ -785,105 +845,34 @@ const editorApp = createApp({
     saveUserPreferences() {
       try {
         // 保存当前样式
-        localStorage.setItem('currentStyle', this.currentStyle);
+        localStorage.setItem(MMX_STORAGE.currentStyle, this.currentStyle);
 
         // 保存当前内容
-        localStorage.setItem('markdownInput', this.markdownInput);
+        localStorage.setItem(MMX_STORAGE.markdownInput, this.markdownInput);
+
+        if (this.currentArticleId) {
+          localStorage.setItem(MMX_STORAGE.currentArticleId, this.currentArticleId);
+        } else {
+          localStorage.removeItem(MMX_STORAGE.currentArticleId);
+        }
       } catch (error) {
         console.error('保存用户偏好失败:', error);
       }
     },
 
-    // 初始化浮动广告
-    initFloatingAd() {
-      let shouldShow = true;
-      try {
-        const closed = localStorage.getItem('floatingAdClosed');
-        if (closed) {
-          const closedTime = parseInt(closed, 10);
-          if (!Number.isNaN(closedTime)) {
-            shouldShow = Date.now() - closedTime >= 24 * 60 * 60 * 1000;
-          }
-        }
-      } catch (error) {
-        console.warn('读取浮动广告状态失败:', error);
-      }
-
-      if (!shouldShow) {
-        this.floatingAd.isVisible = false;
-        return;
-      }
-
-      setTimeout(() => {
-        this.floatingAd.isVisible = true;
-      }, 3000);
-
-      this.startFloatingAdRotation();
-    },
-
-    startFloatingAdRotation() {
-      if (this.floatingAdTimer) {
-        clearInterval(this.floatingAdTimer);
-      }
-
-      if (!this.floatingAd.ads || this.floatingAd.ads.length <= 1) {
-        return;
-      }
-
-      this.floatingAdTimer = setInterval(() => {
-        if (this.floatingAd.isVisible && !this.floatingAd.isExpanded) {
-          this.floatingAd.currentIndex = (this.floatingAd.currentIndex + 1) % this.floatingAd.ads.length;
-        }
-      }, 5000);
-    },
-
-    stopFloatingAdRotation() {
-      if (this.floatingAdTimer) {
-        clearInterval(this.floatingAdTimer);
-        this.floatingAdTimer = null;
-      }
-    },
-
-    toggleFloatingAd() {
-      this.floatingAd.isExpanded = !this.floatingAd.isExpanded;
-    },
-
-    closeFloatingAd() {
-      this.floatingAd.isVisible = false;
-      try {
-        localStorage.setItem('floatingAdClosed', Date.now().toString());
-      } catch (error) {
-        console.warn('保存浮动广告状态失败:', error);
-      }
-    },
-
-    openFloatingAd(ad) {
-      if (!ad || !ad.link) {
-        return;
-      }
-
-      window.open(ad.link, '_blank', 'noopener,noreferrer');
-    },
-
-    setFloatingAdIndex(index) {
-      if (index >= 0 && index < this.floatingAd.ads.length) {
-        this.floatingAd.currentIndex = index;
-      }
-    },
-
     // 加载默认示例文章
     loadDefaultExample() {
-      this.markdownInput = `![](https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=1200&h=400&fit=crop)
+      this.markdownInput = `![](https://picsum.photos/seed/mmx-hero/1200/400)
 
-# 公众号 Markdown 编辑器
+# MMX 公众号排版器
 
-欢迎使用这款专为**微信公众号**设计的 Markdown 编辑器！✨
+欢迎使用本工具：专为**微信公众号**设计的 Markdown 排版。✨
 
 ## 🎯 核心功能
 
 ### 1. 智能图片处理
 
-![](https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=500&fit=crop)
+![](https://picsum.photos/seed/mmx-block/800/500)
 
 - **粘贴即用**：支持从任何地方复制粘贴图片（截图、浏览器、文件管理器）
 - **自动压缩**：图片自动压缩，平均压缩 50%-80%
@@ -894,9 +883,9 @@ const editorApp = createApp({
 
 支持朋友圈式的多图网格布局，2-3 列自动排版：
 
-![](https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop)
-![](https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop)
-![](https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop)
+![](https://picsum.photos/seed/mmx-g1/600/400)
+![](https://picsum.photos/seed/mmx-g2/600/400)
+![](https://picsum.photos/seed/mmx-g3/600/400)
 
 ### 3. 13 种精美样式
 
@@ -940,9 +929,7 @@ const markdown = \`![图片](img://\${imageId})\`;
 
 - 试着切换不同的样式主题，体验各种风格的排版效果
 - 粘贴图片试试智能压缩功能
-- 刷新页面看看内容是否保留
-
-**🌟 开源项目**：如果觉得有用，欢迎访问 [GitHub 仓库](https://github.com/alchaincyf/huasheng_editor) 给个 Star！`;
+- 刷新页面看看内容是否保留`;
     },
 
     handleFileUpload(event) {
@@ -2099,7 +2086,7 @@ const markdown = \`![图片](img://\${imageId})\`;
 
     saveStarredStyles() {
       try {
-        localStorage.setItem('starredStyles', JSON.stringify(this.starredStyles));
+        localStorage.setItem(MMX_STORAGE.starredStyles, JSON.stringify(this.starredStyles));
       } catch (error) {
         console.error('保存星标样式失败:', error);
       }
@@ -3172,8 +3159,8 @@ const markdown = \`![图片](img://\${imageId})\`;
         return;
       }
 
-      // 恢复内容和样式
-      this.markdownInput = article.content;
+      // 恢复内容和样式（顺带去掉历史里遗留的推广行）
+      this.markdownInput = stripLegacyRepoPromo(upgradeStoredDemoImageUrls(article.content));
       if (article.style && STYLES[article.style]) {
         this.currentStyle = article.style;
       }
@@ -3196,14 +3183,18 @@ const markdown = \`![图片](img://\${imageId})\`;
       }
 
       this.articleHistory.splice(index, 1);
+      if (this.currentArticleId === articleId) {
+        this.currentArticleId = null;
+      }
       this.saveArticleHistory();
+      this.saveUserPreferences();
       this.showToast('已删除', 'success');
     },
 
     // 从 localStorage 加载历史记录
     loadArticleHistory() {
       try {
-        const saved = localStorage.getItem('articleHistory');
+        const saved = localStorage.getItem(MMX_STORAGE.articleHistory);
         if (saved) {
           const data = JSON.parse(saved);
           if (data && Array.isArray(data.articles)) {
@@ -3222,7 +3213,7 @@ const markdown = \`![图片](img://\${imageId})\`;
         const data = {
           articles: this.articleHistory
         };
-        localStorage.setItem('articleHistory', JSON.stringify(data));
+        localStorage.setItem(MMX_STORAGE.articleHistory, JSON.stringify(data));
       } catch (error) {
         console.error('保存历史记录失败:', error);
         this.showToast('保存历史记录失败', 'error');

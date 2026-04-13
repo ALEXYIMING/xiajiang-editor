@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# 公众号 Markdown 编辑器 - 启动脚本
+# MMX 公众号排版器 - 本地预览
 
-echo "📝 公众号 Markdown 编辑器"
+echo "📝 MMX 公众号排版器"
 echo "================================"
 echo ""
 echo "🌐 服务器地址: http://localhost:8080/"

@@ -1,0 +1,230 @@
+/**
+ * Neobrutalism shell only — does not style .article-wechat-preview inner content
+ * (WeChat article appearance stays from styles.js / STYLES)
+ */
+.app-shell {
+  --neo-ink: #0a0a0a;
+  --neo-paper: #fffef8;
+  --neo-panel: #ffffff;
+  --neo-accent: #ff4d00;
+  --neo-accent-2: #0066ff;
+  --neo-shadow: 4px 4px 0 var(--neo-ink);
+  --neo-shadow-sm: 3px 3px 0 var(--neo-ink);
+  --neo-radius: 0;
+  --neo-border: 2px solid var(--neo-ink);
+}
+
+.app-shell {
+  background: var(--neo-paper) !important;
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow);
+}
+
+.app-shell .header {
+  background: #ffe94a !important;
+  border-bottom: var(--neo-border) !important;
+  box-shadow: none;
+}
+
+.app-shell .logo {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+
+.app-shell .logo svg rect {
+  fill: var(--neo-ink) !important;
+}
+
+.app-shell .styles-section {
+  background: var(--neo-panel) !important;
+  border-bottom: var(--neo-border) !important;
+}
+
+.app-shell .styles-label {
+  color: var(--neo-ink) !important;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.app-shell .style-card {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--neo-shadow-sm);
+  font-weight: 700;
+}
+
+.app-shell .style-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--neo-ink);
+}
+
+.app-shell .style-card.active {
+  background: var(--neo-ink) !important;
+  color: #fff !important;
+  border-color: var(--neo-ink) !important;
+}
+
+.app-shell .editor-panel {
+  border-right: var(--neo-border) !important;
+  background: var(--neo-panel);
+}
+
+.app-shell .markdown-input {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--neo-shadow-sm);
+  background: #fafafa !important;
+}
+
+.app-shell .markdown-input:focus {
+  outline: none !important;
+  box-shadow: 5px 5px 0 var(--neo-accent-2);
+  border-color: var(--neo-ink) !important;
+}
+
+.app-shell .markdown-input.drag-over {
+  box-shadow: 5px 5px 0 var(--neo-accent);
+}
+
+.app-shell .editor-footer {
+  background: #f0e8ff !important;
+  border-top: var(--neo-border) !important;
+}
+
+.app-shell .upload-label {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--neo-shadow-sm);
+  font-weight: 700;
+}
+
+.app-shell .upload-label:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--neo-ink);
+}
+
+.app-shell .preview-header {
+  background: #c8fff3 !important;
+  border-bottom: var(--neo-border) !important;
+}
+
+.app-shell .preview-title {
+  font-weight: 800 !important;
+  color: var(--neo-ink) !important;
+  letter-spacing: 0.06em;
+}
+
+.app-shell .star-btn {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: 2px 2px 0 var(--neo-ink);
+}
+
+.app-shell .history-btn,
+.app-shell .save-btn {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--neo-shadow-sm);
+  font-weight: 700;
+  background: var(--neo-panel) !important;
+}
+
+.app-shell .history-btn:hover,
+.app-shell .save-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--neo-ink);
+}
+
+.app-shell .copy-btn {
+  border-radius: 0 !important;
+  border: var(--neo-border) !important;
+  box-shadow: var(--neo-shadow-sm);
+  font-weight: 800;
+}
+
+.app-shell .copy-btn-x {
+  border: var(--neo-border) !important;
+}
+
+.app-shell .copy-btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--neo-ink);
+  opacity: 1 !important;
+}
+
+/* Preview chrome only — article body untouched */
+.app-shell .preview-content {
+  background: #ececec !important;
+}
+
+.app-shell .empty-state {
+  color: var(--neo-ink);
+}
+
+.app-shell .empty-state h3 {
+  font-weight: 900;
+}
+
+.app-shell .history-sidebar {
+  border-left: var(--neo-border) !important;
+  box-shadow: -6px 0 0 var(--neo-ink);
+  background: var(--neo-panel) !important;
+}
+
+.app-shell .history-header {
+  background: #ffe94a !important;
+  border-bottom: var(--neo-border) !important;
+}
+
+.app-shell .history-count {
+  border: var(--neo-border);
+  border-radius: 0 !important;
+  font-weight: 800;
+}
+
+.app-shell .history-item {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--neo-shadow-sm);
+}
+
+.app-shell .history-action-btn {
+  border: var(--neo-border) !important;
+  border-radius: 0 !important;
+}
+
+.app-shell .toast {
+  border: var(--neo-border);
+  border-radius: 0 !important;
+  box-shadow: var(--neo-shadow);
+  font-weight: 700;
+}
+
+.app-shell .github-link {
+  border-radius: 0 !important;
+  border: var(--neo-border);
+  background: var(--neo-panel);
+  box-shadow: var(--neo-shadow-sm);
+}
+
+.app-shell .github-link:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--neo-ink);
+}
+
+.app-shell .header-link {
+  border-radius: 0 !important;
+  border: var(--neo-border) !important;
+  font-weight: 700;
+  box-shadow: var(--neo-shadow-sm);
+}
+
+.app-shell .header-link.primary {
+  box-shadow: var(--neo-shadow-sm);
+}
+
+/* WeChat article preview: no neo frame on typography */
+.app-shell .article-wechat-preview {
+  /* inherits from STYLES only */
+}
