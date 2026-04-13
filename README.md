@@ -2,6 +2,10 @@
 
 本地 Markdown 编辑，实时预览，一键复制到微信公众号后台。
 
+## 线上地址
+
+GitHub Pages：<https://alexyiming.github.io/xiajiang-editor/>
+
 ## 功能概要
 
 - 双栏编辑与预览，多种成文样式主题（见 `styles.js`）
