@@ -611,37 +611,5 @@ const STYLES = {
       td: 'padding: 10px; border: 1px solid #e0e0e0; color: #1a1a1a !important;',
       tr: 'border-bottom: 1px solid #e0e0e0;',
     }
-  },
-
-  'green-theme': {
-    name: '✨ 绿色主题',
-    styles: {
-      container: 'max-width: 700px; margin: 0 auto; padding: 0 10px; font-family: Optima, "Microsoft YaHei", PingFangSC-regular, serif; font-size: 16px; line-height: 1.5em; color: rgb(89, 89, 89); word-break: break-word;',
-      p: 'color: rgb(89, 89, 89); font-size: 15px; line-height: 1.8em; letter-spacing: 0.04em; text-align: left; text-indent: 0em; margin: 0px; padding: 8px 0px;',
-      strong: 'color: rgb(53, 179, 120); font-weight: bold;',
-      h1: 'margin: 30px 0px 15px; padding: 0px; display: flex; border-bottom: 4px solid rgb(53, 179, 120);',
-      'h1 span': 'font-size: 24px; color: rgb(53, 179, 120); line-height: 1.5em; font-weight: bold; display: block;',
-      h2: 'margin: 30px 0px 15px; padding: 2px 10px; background: rgb(0, 0, 0); color: rgb(255, 255, 255); font-size: 18px; font-weight: bold;',
-      h3: 'margin: 30px 0px 15px; padding: 0px; display: flex;',
-      'h3 span': 'font-size: 20px; color: rgb(53, 179, 120); line-height: 1.5em; font-weight: bold; display: block;',
-      h4: 'margin-top: 30px; margin-bottom: 15px; padding: 0px; display: block; font-size: 18px; font-weight: bold; color: #333;',
-      h5: 'margin: 30px 0px 15px; padding: 0px; display: block; font-size: 16px; font-weight: bold; color: #555;',
-      h6: 'margin: 20px 0px 10px; padding: 0px; display: block; font-size: 14px; font-weight: bold; color: #777;',
-      a: 'color: rgb(53, 179, 120); font-weight: bold; text-decoration: none; border-bottom: 1px solid rgb(53, 179, 120);',
-      ul: 'list-style-type: disc; margin: 8px 0px; padding: 0px 0px 0px 25px; color: rgb(0, 0, 0);',
-      'ul li span': 'color: rgb(89, 89, 89); font-size: 15px; line-height: 1.8em;',
-      ol: 'list-style-type: decimal; margin: 8px 0px; padding: 0px 0px 0px 25px; color: rgb(0, 0, 0);',
-      li: 'margin-top: 5px; margin-bottom: 5px; line-height: 1.8em; color: rgb(89, 89, 89);',
-      blockquote: 'margin: 20px 0px; padding: 10px 10px 10px 20px; border-left: 3px solid rgb(53, 179, 120); background: rgb(251, 249, 253); color: #333; font-style: italic;',
-      code: 'color: rgba(30, 107, 184, 1); font-size: 14px; line-height: 1.8em; background-color: rgba(27, 31, 35, 0.05); padding: 2px 4px; border-radius: 4px; font-family: Consolas, Monaco, Menlo, monospace; word-break: break-all;',
-      pre: 'margin-top: 10px; margin-bottom: 10px; padding: 15px; background: #282c34; border-radius: 5px; overflow-x: auto;',
-      'pre code': 'display: -webkit-box; font-family: Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; color: #abb2bf;',
-      hr: 'margin: 10px 0px; padding: 0px; border-style: solid none none; border-width: 1px 3px 3px; border-color: rgb(53, 179, 120) rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.4); border-radius: 0px; background: none; height: 1px;',
-      img: 'display: block; margin: 0px auto; max-width: 100%; max-height: 500px;',
-      table: 'display: table; text-align: left; width: 100%; margin: 20px 0; border-collapse: collapse;',
-      th: 'color: rgb(89, 89, 89); font-size: 15px; line-height: 1.5em; text-align: left; font-weight: bold; background: rgb(240, 240, 240); padding: 5px 10px; border: 1px solid rgba(204, 204, 204, 0.4);',
-      td: 'padding: 5px 10px; border: 1px solid rgba(204, 204, 204, 0.4); color: rgb(89, 89, 89);',
-      tr: 'border-bottom: 1px solid rgba(204, 204, 204, 0.4);',
-    }
   }
 };
