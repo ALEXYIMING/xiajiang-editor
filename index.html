@@ -1852,27 +1852,32 @@
     <div id="style-list"></div>
   </div>
 
+  
   <!-- 加载脚本 -->
-  <script src="styles.js?v=9"></script>
-  <script src="app.js?v=9"></script>
+  <script src="styles.js?v=10"></script>
+  <script src="app.js?v=10"></script>
   <script>
     // 调试面板初始化
-    setTimeout(() => {
+    function initDebugPanel() {
       const list = document.getElementById('style-list');
-      if (list && window.STYLES) {
+      if (list && window.STYLES && window.app) {
+        list.innerHTML = '';
         Object.keys(STYLES).sort().forEach(key => {
           const btn = document.createElement('button');
           btn.textContent = STYLES[key].name;
-          btn.style.cssText = 'display:block;width:100%;margin:2px 0;padding:4px 8px;cursor:pointer;';
+          btn.style.cssText = 'display:block;width:100%;margin:2px 0;padding:4px 8px;cursor:pointer;background:' + (app.currentStyle === key ? '#007bff;color:#fff' : '#fff') + ';border:1px solid #ccc;';
           btn.onclick = () => {
-            if (window.app) {
-              app.currentStyle = key;
-            }
+            app.currentStyle = key;
+            initDebugPanel();
           };
           list.appendChild(btn);
         });
+      } else if (!window.app) {
+        list.innerHTML = '<div style="color:red;">App not loaded yet, retrying...</div>';
+        setTimeout(initDebugPanel, 500);
       }
-    }, 1000);
+    }
+    setTimeout(initDebugPanel, 2000);
   </script>
 </body>
 </html>
