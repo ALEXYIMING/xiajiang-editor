@@ -1846,8 +1846,33 @@
     </div>
   </div>
 
+  <!-- 调试面板：显示所有样式 -->
+  <div id="debug-panel" style="position:fixed;bottom:10px;left:10px;background:#fff;border:2px solid #333;padding:10px;z-index:9999;max-height:300px;overflow-y:auto;font-size:12px;">
+    <div style="font-weight:bold;margin-bottom:8px;">所有样式 (点击切换)：</div>
+    <div id="style-list"></div>
+  </div>
+
   <!-- 加载脚本 -->
-  <script src="styles.js?v=8"></script>
-  <script src="app.js?v=8"></script>
+  <script src="styles.js?v=9"></script>
+  <script src="app.js?v=9"></script>
+  <script>
+    // 调试面板初始化
+    setTimeout(() => {
+      const list = document.getElementById('style-list');
+      if (list && window.STYLES) {
+        Object.keys(STYLES).sort().forEach(key => {
+          const btn = document.createElement('button');
+          btn.textContent = STYLES[key].name;
+          btn.style.cssText = 'display:block;width:100%;margin:2px 0;padding:4px 8px;cursor:pointer;';
+          btn.onclick = () => {
+            if (window.app) {
+              app.currentStyle = key;
+            }
+          };
+          list.appendChild(btn);
+        });
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
