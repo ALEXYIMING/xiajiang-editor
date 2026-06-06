@@ -57,6 +57,40 @@ const STYLES = {
       tr: 'border-bottom: 1px solid #e0e0e0;',
     }
   },
+  'neo-brutalism': {
+    name: '✨ Neo-Brutalism 新粗野',
+    styles: {
+      container: 'max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-size: 16px; line-height: 1.75 !important; color: #000 !important; background-color: #F5F1E8 !important; word-wrap: break-word;',
+      h1: 'font-size: 32px; font-weight: 900; color: #000 !important; line-height: 1.2 !important; margin: 40px 0 20px; padding: 16px 20px; background-color: #FFE500 !important; border: 4px solid #000 !important; box-shadow: 8px 8px 0 #000; text-transform: uppercase;',
+      h2: 'font-size: 24px; font-weight: 900; color: #fff !important; line-height: 1.3 !important; margin: 36px 0 16px; padding: 12px 16px; background-color: #000 !important; border: 3px solid #000 !important; box-shadow: 6px 6px 0 #00E676;',
+      h3: 'font-size: 21px; font-weight: 800; color: #000 !important; line-height: 1.4 !important; margin: 28px 0 12px; padding: 6px 12px; background-color: #fff !important; border: 3px solid #000 !important; box-shadow: 5px 5px 0 #000; display: inline-block;',
+      h4: 'font-size: 18px; font-weight: 800; color: #000 !important; line-height: 1.4 !important; margin: 24px 0 10px; padding-left: 12px; border-left: 6px solid #FFE500; box-shadow: 4px 4px 0 #000;',
+      h5: 'font-size: 17px; font-weight: 800; color: #2563EB !important; line-height: 1.4 !important; margin: 20px 0 10px; box-shadow: 3px 3px 0 #000; text-transform: uppercase; letter-spacing: 1px;',
+      h6: 'font-size: 15px; font-weight: 700; color: #666 !important; line-height: 1.4 !important; margin: 18px 0 8px; box-shadow: 2px 2px 0 #999;',
+      p: 'margin: 16px 0 !important; line-height: 1.85 !important; color: #000 !important;',
+      strong: 'font-weight: 900; color: #000 !important; background-color: #FFE500 !important; padding: 1px 6px; border: 2px solid #000;',
+      em: 'font-style: italic; font-weight: 600; color: #fff !important; background-color: #FF3EA5 !important; padding: 0 6px; border: 2px solid #000;',
+      a: 'color: #2563EB !important; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; font-weight: 700;',
+      ul: 'margin: 20px 0; padding-left: 28px; list-style: disc;',
+      ol: 'margin: 20px 0; padding-left: 28px; list-style: decimal;',
+      li: 'margin: 10px 0; padding: 8px 14px; background-color: #fff !important; border: 2px solid #000 !important; line-height: 1.7 !important; color: #000 !important;',
+      blockquote: 'margin: 24px 0; padding: 16px 20px; background-color: #FFE500 !important; border: 4px solid #000 !important; box-shadow: 6px 6px 0 #000; color: #000 !important; font-size: 17px; line-height: 1.7 !important; font-weight: 600;',
+      code: 'font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 15px; padding: 2px 8px; background-color: #000 !important; color: #00E676 !important; border: 2px solid #000; font-weight: 600;',
+      pre: 'margin: 24px 0; padding: 18px; background-color: #000 !important; color: #00E676 !important; border: 4px solid #000 !important; box-shadow: 6px 6px 0 #FFE500; overflow-x: auto; line-height: 1.6 !important;',
+      hr: 'margin: 36px 0; border: none; height: 0; border-top: 6px solid #000; border-bottom: 6px solid #FFE500;',
+      img: 'max-width: 100%; max-height: 600px !important; height: auto; display: block; margin: 24px auto; border: 4px solid #000 !important; box-shadow: 8px 8px 0 #FF3EA5;',
+      table: 'width: 100%; margin: 24px 0; border-collapse: collapse; font-size: 15px; border: 3px solid #000;',
+      th: 'background-color: #FFE500 !important; color: #000 !important; padding: 12px; text-align: left; border: 2px solid #000; font-weight: 900; text-transform: uppercase;',
+      td: 'padding: 10px 12px; border: 2px solid #000; color: #000 !important; background-color: #fff !important;',
+      tr: 'border-bottom: 2px solid #000;',
+    },
+    randomTitleColors: {
+      enabled: true,
+      mode: 'per-heading',
+      exclude: ['h2'],
+      palette: ['#FFE500', '#FF3EA5', '#2563EB', '#00E676', '#FF6B35']
+    }
+  },
 
   'wechat-ft': {
     name: '金融时报',
@@ -611,5 +645,5 @@ const STYLES = {
       td: 'padding: 10px; border: 1px solid #e0e0e0; color: #1a1a1a !important;',
       tr: 'border-bottom: 1px solid #e0e0e0;',
     }
-  }
+  },
 };

@@ -1109,6 +1109,29 @@ const markdown = \`![图片](img://\${imageId})\`;
         });
       });
 
+      // 随机化标题硬阴影颜色(仅对开启了 randomTitleColors 的主题生效)
+      const styleConfig = STYLES[this.currentStyle];
+      if (styleConfig && styleConfig.randomTitleColors && styleConfig.randomTitleColors.enabled) {
+        const config = styleConfig.randomTitleColors;
+        const palette = config.palette || [];
+        if (palette.length) {
+          doc.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+            const tag = h.tagName.toLowerCase();
+            if (config.exclude && config.exclude.includes(tag)) return;
+            const color = palette[Math.floor(Math.random() * palette.length)];
+            if (!color) return;
+            const styleAttr = h.getAttribute('style') || '';
+            if (/box-shadow\s*:/i.test(styleAttr)) {
+              const newAttr = styleAttr.replace(
+                /box-shadow\s*:\s*([^;]+)/gi,
+                (m, val) => `box-shadow: ${val.replace(/#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)/g, color)}`
+              );
+              h.setAttribute('style', newAttr);
+            }
+          });
+        }
+      }
+
       // 标题内的行内元素统一继承标题颜色，避免各主题样式冲突
       const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
       headings.forEach(heading => {
